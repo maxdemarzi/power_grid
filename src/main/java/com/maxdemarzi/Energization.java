@@ -266,9 +266,9 @@ public class Energization {
                     e.printStackTrace();
                 }
 
-
+                String result;
                 do {
-                    String result = null;
+                    result = null;
                     try {
                         result = results.poll(1, TimeUnit.SECONDS);
                     } catch (InterruptedException e) {
