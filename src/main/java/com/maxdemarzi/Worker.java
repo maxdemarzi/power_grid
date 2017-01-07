@@ -15,13 +15,13 @@ import static com.maxdemarzi.Energization.energized2;
 
 public class Worker  implements Runnable {
 
-    private BlockingQueue<Object[]> processQueue = null;
+    private BlockingQueue<Work> processQueue = null;
     private BlockingQueue<String> results = null;
     private int count = 0;
     private RelationshipIterator relationshipIterator;
     Cursor<RelationshipItem> c;
 
-    public Worker(BlockingQueue<Object[]> processQueue, BlockingQueue<String> results) throws IOException {
+    public Worker(BlockingQueue<Work> processQueue, BlockingQueue<String> results) throws IOException {
         this.processQueue = processQueue;
         this.results = results;
     }
@@ -33,7 +33,7 @@ public class Worker  implements Runnable {
             ReadOperations ops = ctx.get().readOperations();
 
             do {
-                Object[] item = this.processQueue.take();
+                Work item = this.processQueue.take();
                 if (item == null) {
                     break;
                 }
@@ -52,21 +52,21 @@ public class Worker  implements Runnable {
 
     }
 
-    private void processEntry(Object[] entry, ReadOperations ops) throws EntityNotFoundException, InterruptedException, IOException {
-        relationshipIterator = ops.nodeGetRelationships((long) entry[1], org.neo4j.graphdb.Direction.BOTH);
+    private void processEntry(Work work, ReadOperations ops) throws EntityNotFoundException, InterruptedException, IOException {
+        relationshipIterator = ops.nodeGetRelationships(work.getNodeId(), org.neo4j.graphdb.Direction.BOTH);
 
         while (relationshipIterator.hasNext()) {
             c = ops.relationshipCursor(relationshipIterator.next());
             if (c.next()
                     && (boolean) c.get().getProperty( Energization.propertyIncomingSwitchOn)
                     && (boolean) c.get().getProperty( Energization.propertyOutgoingSwitchOn)) {
-                long otherNodeId = c.get().otherNode((long) entry[1]);
+                long otherNodeId = c.get().otherNode(work.getNodeId());
                 if (!energized2.contains((int) otherNodeId)) {
                     double newVoltage = (double) ops.nodeGetProperty(otherNodeId,  Energization.propertyVoltage);
-                    if (newVoltage <= (double) entry[2]) {
+                    if (newVoltage <= (double) work.getVoltage()) {
                         if(energized2.checkedAdd((int) otherNodeId)) {
                             results.add((String) ops.nodeGetProperty(otherNodeId, Energization.propertyEquipmentId));
-                            processQueue.put(new Object[]{null, otherNodeId, newVoltage});
+                            processQueue.put(new Work(otherNodeId, newVoltage));
                         }
                     }
                 }

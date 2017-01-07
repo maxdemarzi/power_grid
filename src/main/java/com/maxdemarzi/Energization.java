@@ -233,7 +233,7 @@ public class Energization {
         System.out.println("Started: "  );
         System.out.println( new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime()) );
         HashMap input = Validators.getValidEquipmentIds(body);
-        BlockingQueue<Object[]> queue = new LinkedBlockingQueue<>();
+        BlockingQueue<Work> queue = new LinkedBlockingQueue<>();
         BlockingQueue<String> results = new LinkedBlockingQueue <>();
         ExecutorService service = Executors.newFixedThreadPool(CPUS);
 
@@ -257,7 +257,7 @@ public class Energization {
                             long equipmentNodeId = nodes.get().id();
                             energized2.add((int) equipmentNodeId);
                             jg.writeString(equipmentId);
-                            queue.add(new Object[]{equipmentId, equipmentNodeId, ops.nodeGetProperty(equipmentNodeId, propertyVoltage)});
+                            queue.add(new Work(equipmentNodeId, (Double)ops.nodeGetProperty(equipmentNodeId, propertyVoltage)));
                         }
                         nodes.close();
                     }
