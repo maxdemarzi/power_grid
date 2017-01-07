@@ -94,7 +94,7 @@ public class Energization {
             }
 
             startingEquipment.forEach(bus -> {
-                InitialBranchState.State<Double> ibs = new InitialBranchState.State<>((Double) bus.getProperty("NomVolt", 999.0), 0.0);
+                InitialBranchState.State<Double> ibs = new InitialBranchState.State<>((Double) bus.getProperty("voltage", 999.0), 0.0);
                 TraversalDescription td = db.traversalDescription()
                         .depthFirst()
                         .expand(expander, ibs)
