@@ -94,7 +94,8 @@ public class Energization {
             }
 
             startingEquipment.forEach(bus -> {
-                InitialBranchState.State<Double> ibs = new InitialBranchState.State<>((Double) bus.getProperty("voltage", 999.0), 0.0);
+                InitialBranchState.State<Double> ibs;
+                ibs = new InitialBranchState.State<>((Double) bus.getProperty("voltage", 999.0), 0.0);
                 TraversalDescription td = db.traversalDescription()
                         .depthFirst()
                         .expand(expander, ibs)
@@ -102,17 +103,14 @@ public class Energization {
                         .evaluator(evaluator);
 
                 for (org.neo4j.graphdb.Path position : td.traverse(bus)) {
-                    long nodeId = position.endNode().getId();
-                    if (!skip.contains(nodeId) && position.endNode().hasLabel(Labels.Equipment)) {
+                    Node endNode = position.endNode();
+                    if (!skip.contains(endNode.getId())) {
                         results.add(position.endNode().getProperty("equipment_id"));
-                        skip.add(nodeId);
+                        skip.add(endNode.getId());
                     }
-                    position.nodes().forEach(node -> {
-                        node.setProperty("Energized", true);
-                    });
 
+                    endNode.setProperty("Energized", true);
                 }
-
             });
             tx.success();
         }
