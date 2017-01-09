@@ -34,13 +34,9 @@ public class Worker  implements Runnable {
 
             do {
                 Work item = this.processQueue.take();
-                if (item == null) {
-                    break;
-                }
                 this.processEntry(item, ops);
                 count++;
             } while (true);
-            tx.success();
         } catch (InterruptedException e) {
             System.out.println("Interrupted");
             Thread.currentThread().interrupt();
