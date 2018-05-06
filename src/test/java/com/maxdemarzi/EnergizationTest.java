@@ -63,7 +63,7 @@ public class EnergizationTest {
                                                          /
                -on- l1 -on- -> e2 {138}-on- l3 -on- -> e3 {22} -on- l6 -off- e4
              /                                          \
-            e1 {138}                                      -on- t1 -on- e8 {138}
+            e1 {138}                                      -on- l7 -on- e8 {138}
              \
                 -on- l2 -on- -> e5 {22}-on- l4 -on- -> e6 {138}
          */
@@ -82,7 +82,7 @@ public class EnergizationTest {
                     "CREATE (e5)-[l4:CONNECTED {incoming_switch_on: true, outgoing_switch_on: true }]->(e6)" +
                     "CREATE (e3)-[l5:CONNECTED {incoming_switch_on: true, outgoing_switch_on: true }]->(e7)" +
                     "CREATE (e3)-[l6:CONNECTED {incoming_switch_on: true, outgoing_switch_on: false }]->(e4)" +
-                    "CREATE (e3)-[t1:CONNECTED {incoming_switch_on: true, outgoing_switch_on: true }]->(e7)"
+                    "CREATE (e3)-[l7:CONNECTED {incoming_switch_on: true, outgoing_switch_on: true }]->(e8)"
             ;
 
     private static final HashMap input = new HashMap<String, Object>() {{
