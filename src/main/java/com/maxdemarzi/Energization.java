@@ -171,7 +171,7 @@ public class Energization {
 
     @POST
     @Path("/streaming")
-    public Response energizationStreaming(String body, @Context GraphDatabaseService db) throws IndexNotFoundKernelException, IOException, SchemaRuleNotFoundException, IndexBrokenKernelException, EntityNotFoundException {
+    public Response energizationStreaming(String body, @Context GraphDatabaseService db) throws IOException {
         HashMap input = Validators.getValidEquipmentIds(body);
         StreamingOutput stream = os -> {
             JsonGenerator jg = objectMapper.getJsonFactory().createJsonGenerator(os, JsonEncoding.UTF8);
@@ -229,7 +229,7 @@ public class Energization {
 
     @POST
     @Path("multi")
-    public StreamingOutput energizationThreaded(String body, @Context GraphDatabaseService db) throws IndexNotFoundKernelException, IOException, SchemaRuleNotFoundException, IndexBrokenKernelException, EntityNotFoundException {
+    public StreamingOutput energizationThreaded(String body, @Context GraphDatabaseService db) throws IOException {
         System.out.println("Started: "  );
         System.out.println( new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime()) );
         HashMap input = Validators.getValidEquipmentIds(body);

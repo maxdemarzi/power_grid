@@ -15,8 +15,8 @@ import static com.maxdemarzi.Energization.energized2;
 
 public class Worker  implements Runnable {
 
-    private BlockingQueue<Work> processQueue = null;
-    private BlockingQueue<String> results = null;
+    private BlockingQueue<Work> processQueue;
+    private BlockingQueue<String> results;
     private int count = 0;
     private RelationshipIterator relationshipIterator;
     Cursor<RelationshipItem> c;
@@ -48,7 +48,7 @@ public class Worker  implements Runnable {
 
     }
 
-    private void processEntry(Work work, ReadOperations ops) throws EntityNotFoundException, InterruptedException, IOException {
+    private void processEntry(Work work, ReadOperations ops) throws EntityNotFoundException, InterruptedException {
         relationshipIterator = ops.nodeGetRelationships(work.getNodeId(), org.neo4j.graphdb.Direction.BOTH);
 
         while (relationshipIterator.hasNext()) {
